@@ -26,11 +26,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    board.cpp
+    board.cpp \
+    tile.cpp \
+    gamemanager.cpp \
+    tilewidget.cpp \
+    player.cpp \
+    pixmaptile.cpp
 
 HEADERS += \
         mainwindow.h \
-    board.h
+    board.h \
+    tile.h \
+    gamemanager.h \
+    tilewidget.h \
+    player.h \
+    pixmaptile.h
 
 FORMS += \
         mainwindow.ui
