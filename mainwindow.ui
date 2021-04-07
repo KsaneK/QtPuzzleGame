@@ -26,7 +26,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <property name="sizePolicy">
@@ -192,6 +192,9 @@
           </item>
           <item>
            <layout class="QGridLayout" name="boardGrid">
+            <property name="spacing">
+             <number>1</number>
+            </property>
             <item row="0" column="0">
              <spacer name="verticalSpacer">
               <property name="orientation">
@@ -224,6 +227,14 @@
      <height>25</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuPlik">
+    <property name="title">
+     <string>Plik</string>
+    </property>
+    <addaction name="actionZapisz_gr"/>
+    <addaction name="actionWczytaj_gr"/>
+   </widget>
+   <addaction name="menuPlik"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -234,6 +245,22 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionZapisz_gr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Zapisz grę</string>
+   </property>
+  </action>
+  <action name="actionWczytaj_gr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Wczytaj grę</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

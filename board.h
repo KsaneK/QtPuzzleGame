@@ -11,12 +11,15 @@ class Board : public QObject
     Q_OBJECT
 public:
     explicit Board(int size);
+    Board(int size, std::vector<int> values);
+    Board(int size, std::vector<int> values, QPixmap* pm);
     Tile* tileAt(int row, int col);
 
     void move(Tile* tile);
     ~Board();
     void setImage(QPixmap *pixmap);
     int getSize();
+    void clearImage();
 signals:
 
 public slots:

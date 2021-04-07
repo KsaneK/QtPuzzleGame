@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <QPixmapCache>
 
 Board::Board(int size)
 {
@@ -28,6 +29,19 @@ Board::Board(int size)
     values.shrink_to_fit();
 }
 
+Board::Board(int size, std::vector<int> values) {
+    this->size = size;
+    finished = false;
+    tiles.reserve(size * size);
+    for (unsigned int i = 0; i < values.size() ; i++) {
+        tiles.emplace_back(values[i]);
+    }
+}
+
+Board::Board(int size, std::vector<int> values, QPixmap *pm) : Board(size, values) {
+    setImage(pm);
+}
+
 Board::~Board() {
 
 }
@@ -40,6 +54,17 @@ void Board::setImage(QPixmap* pixmap) {
     PixmapTile* pixmapTile = new PixmapTile(pixmap, size);
     for (unsigned int i = 0; i < tiles.size(); i++) {
         tiles.at(i).setImage(pixmapTile);
+    }
+}
+
+void Board::clearImage() {
+    if (this->tiles.size() > 0 && this->tiles.at(0).getImage() != nullptr) {
+        delete this->tiles.at(0).getImage()->getPixmap();
+        delete this->tiles.at(0).getImage();
+        QPixmapCache::clear();
+    }
+    for (unsigned int i = 0; i < tiles.size(); i++) {;
+        tiles.at(i).setImage(nullptr);
     }
 }
 

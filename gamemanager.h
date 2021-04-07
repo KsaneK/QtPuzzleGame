@@ -13,6 +13,8 @@ class GameManager : public QObject
 public:
     explicit GameManager(QObject *parent = nullptr);
     Board* newGame(int size);
+    void saveGame(QString& filename);
+    bool loadGame(QString& filename);
 
     void setPlayer(Player* player);
     Board *getActiveBoard();

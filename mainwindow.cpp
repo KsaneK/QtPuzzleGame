@@ -39,6 +39,7 @@ void MainWindow::createBoard() {
         createTileWidgetsFromBoard(board);
         ui->radioImage->setEnabled(true);
         ui->radioNumber->setEnabled(true);
+        ui->actionZapisz_gr->setEnabled(true);
     }
 }
 
@@ -76,12 +77,15 @@ void MainWindow::setUsername() {
     text.append(username);
     gameManager->setPlayer(player);
     ui->lUsername->setText(text);
+    ui->actionWczytaj_gr->setEnabled(true);
     ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::setNumberBoard() {
-    if (ui->radioNumber->isChecked())
-        std::cout << "test " << std::endl;
+    if (ui->radioNumber->isChecked()) {
+        gameManager->getActiveBoard()->clearImage();
+        repaintBoard();
+    }
 }
 
 void MainWindow::setImageBoard() {
@@ -93,6 +97,39 @@ void MainWindow::setImageBoard() {
             QString selectedFile = fdialog.selectedFiles().at(0);
             QPixmap* img = new QPixmap(selectedFile);
             gameManager->getActiveBoard()->setImage(img);
+            repaintBoard();
+        }
+    }
+}
+
+void MainWindow::saveGame() {
+    QFileDialog fdialog(this);
+    fdialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
+    fdialog.setNameFilter(QString::fromStdString("Puzzzle Save Files (*.puzz)"));
+    fdialog.setDefaultSuffix("puzz");
+    if(fdialog.exec()) {
+        QString fileName = fdialog.selectedFiles().at(0);
+        gameManager->saveGame(fileName);
+    }
+}
+
+void MainWindow::loadGame() {
+    QFileDialog fdialog(this);
+    fdialog.setFileMode(QFileDialog::AnyFile);
+    fdialog.setNameFilter(QString::fromStdString("Puzzzle Save Files (*.puzz)"));
+    fdialog.setDefaultSuffix(QString::fromStdString("puzz"));
+    if (fdialog.exec()) {
+        QString selectedFile = fdialog.selectedFiles().at(0);
+        bool loaded = gameManager->loadGame(selectedFile);
+        if (loaded) {
+            ui->actionZapisz_gr->setEnabled(true);
+            clearTileWidgets();
+            createTileWidgetsFromBoard(gameManager->getActiveBoard());
+            repaintBoard();
+        } else {
+            QMessageBox msgbox;
+            msgbox.setText("Nie udało się wczytać gry. Plik może być uszkodzony.");
+            msgbox.exec();
         }
     }
 }
@@ -102,4 +139,6 @@ void MainWindow::setupConnections() {
     connect(ui->generateBtn, SIGNAL(clicked(bool)), this, SLOT(createBoard()));
     connect(ui->radioNumber, SIGNAL(toggled(bool)), this, SLOT(setNumberBoard()));
     connect(ui->radioImage, SIGNAL(toggled(bool)), this, SLOT(setImageBoard()));
+    connect(ui->actionWczytaj_gr, SIGNAL(triggered(bool)), this, SLOT(loadGame()));
+    connect(ui->actionZapisz_gr, SIGNAL(triggered(bool)), this, SLOT(saveGame()));
 }

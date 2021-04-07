@@ -16,13 +16,14 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(GameManager* gm, QWidget *parent = 0);
     ~MainWindow();
-
 public slots:
     void createBoard();
     void setUsername();
 
     void setNumberBoard();
     void setImageBoard();
+    void saveGame();
+    void loadGame();
 private:
     Ui::MainWindow *ui;
     GameManager* gameManager;
