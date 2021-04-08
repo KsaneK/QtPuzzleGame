@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "simplevector.h"
 #include "tile.h"
 #include <vector>
 #include <QPixmap>
@@ -12,6 +13,7 @@ class Board : public QObject
 public:
     explicit Board(int size);
     Board(int size, std::vector<int> values);
+    Board(int size, QPixmap* pm);
     Board(int size, std::vector<int> values, QPixmap* pm);
     Tile* tileAt(int row, int col);
 
@@ -26,7 +28,7 @@ public slots:
 
 private:
     bool finished;
-    std::vector<Tile> tiles;
+    SimpleVector<Tile> tiles;
     int size;
     void swap(int i1, int i2);
     bool isSolvable(std::vector<int> values);

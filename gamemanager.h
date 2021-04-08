@@ -12,7 +12,7 @@ class GameManager : public QObject
     Q_OBJECT
 public:
     explicit GameManager(QObject *parent = nullptr);
-    Board* newGame(int size);
+    Board* newGame(int size, bool keepImage);
     void saveGame(QString& filename);
     bool loadGame(QString& filename);
 

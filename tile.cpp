@@ -12,6 +12,11 @@ Tile::Tile(Tile &&t) {
     pixmapTile = t.pixmapTile;
 }
 
+Tile::Tile(Tile &t) {
+    value = t.value;
+    pixmapTile = t.pixmapTile;
+}
+
 int Tile::getValue() const {
     return value;
 }

@@ -8,11 +8,20 @@ GameManager::GameManager(QObject *parent) : QObject(parent)
 
 }
 
-Board* GameManager::newGame(int size)
+Board* GameManager::newGame(int size, bool keepImage=false)
 {
-    if (board != nullptr)
-        delete board;
-    board = new Board(size);
+    QPixmap* pm = nullptr;
+    if (board != nullptr) {
+        if (keepImage) {
+            if (board->getSize() > 0) {
+                PixmapTile* pmt = board->tileAt(0, 0)->getImage();
+                pm = pmt->getPixmap();
+                delete pmt;
+            }
+        }
+        delete board;   
+    }
+    board = keepImage && pm != nullptr ? new Board(size, pm) : new Board(size);
     return board;
 }
 
@@ -31,7 +40,7 @@ void GameManager::saveGame(QString &filename)
         QBuffer buf(&bytes);
         buf.open(QIODevice::WriteOnly);
         pm->save(&buf, "PNG");
-        int size = bytes.size();
+        unsigned int size = bytes.size();
         const char* data = bytes.constData();
         size_t saved = 0, bwrite;
         fwrite(&size, sizeof(int), 1, f);
@@ -49,7 +58,7 @@ void GameManager::saveGame(QString &filename)
 bool GameManager::loadGame(QString &filename)
 {
     size_t bytesRead;
-    int boardSize;
+    unsigned int boardSize;
     FILE* f = fopen(filename.toStdString().c_str(), "rb");
     bytesRead = fread(&boardSize, sizeof(int), 1, f);
     if (bytesRead != 1) { fclose(f); return false; }
@@ -60,7 +69,7 @@ bool GameManager::loadGame(QString &filename)
         if (bytesRead != 1) { fclose(f); return false; }
         values.push_back(v);
     }
-    int pixmapSize = 0;
+    unsigned int pixmapSize = 0;
     QPixmap* pm = nullptr;
     bytesRead = fread(&pixmapSize, sizeof(int), 1, f);
     if (pixmapSize > 0) {

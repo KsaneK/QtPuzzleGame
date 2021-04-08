@@ -34,7 +34,7 @@ void MainWindow::createBoard() {
         msgBox.setText(err.c_str());
         msgBox.exec();
     } else {
-        Board* board = gameManager->newGame(size);
+        Board* board = gameManager->newGame(size, ui->radioImage->isChecked());
         clearTileWidgets();
         createTileWidgetsFromBoard(board);
         ui->radioImage->setEnabled(true);

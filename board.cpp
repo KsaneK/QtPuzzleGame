@@ -19,7 +19,6 @@ Board::Board(int size)
         std::shuffle(values.begin(), values.end(), random_engine);
     }
 
-
     tiles.reserve(size * size);
     for (unsigned int i = 0; i < values.size() ; i++) {
         tiles.emplace_back(values[i]);
@@ -36,6 +35,10 @@ Board::Board(int size, std::vector<int> values) {
     for (unsigned int i = 0; i < values.size() ; i++) {
         tiles.emplace_back(values[i]);
     }
+}
+
+Board::Board(int size, QPixmap *pm) : Board(size) {
+    setImage(pm);
 }
 
 Board::Board(int size, std::vector<int> values, QPixmap *pm) : Board(size, values) {
@@ -79,7 +82,7 @@ bool Board::isSolvable(std::vector<int> values) {
 
 void Board::checkIfSolved() {
     for (unsigned int i = 0; i < tiles.size() - 1; i++) {
-        if (tiles.at(i).getValue() != i) return;
+        if (tiles.at(i).getValue() != (int)i) return;
     }
     finished = true;
     tiles.at(tiles.size() - 1).setValue(tiles.size() - 1);
@@ -90,7 +93,8 @@ void Board::checkIfSolved() {
 }
 
 Tile* Board::tileAt(int row, int col) {
-    return &tiles.at(row * size + col);
+    Tile* t = &tiles.at(row * size + col);
+    return t;
 }
 
 void Board::move(Tile* tile) {

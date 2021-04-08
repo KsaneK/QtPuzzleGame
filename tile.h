@@ -14,6 +14,7 @@ class Tile : public QObject
 public:
     explicit Tile(int value);
     Tile(Tile&& t);
+    Tile(Tile& t);
     int getValue() const;
     PixmapTile *getImage();
     void setValue(int v);

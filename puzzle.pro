@@ -40,7 +40,8 @@ HEADERS += \
     gamemanager.h \
     tilewidget.h \
     player.h \
-    pixmaptile.h
+    pixmaptile.h \
+    simplevector.h
 
 FORMS += \
         mainwindow.ui
