@@ -33,6 +33,17 @@ public:
         _size = 0;
         data = allocator.allocate(_capacity);
     }
+
+    bool operator == (SimpleVector<T>& another) {
+        if (_size != another._size) return false;
+        for (int i = 0; i < _size; i++) {
+            if (data[i] != another.data[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     ~SimpleVector() {
         allocator.deallocate(data, _capacity);
     }

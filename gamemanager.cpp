@@ -1,11 +1,12 @@
 #include "gamemanager.h"
 
 #include <QBuffer>
+#include <QTimer>
 #include <iostream>
 
 GameManager::GameManager(QObject *parent) : QObject(parent)
 {
-
+    board = nullptr;
 }
 
 Board* GameManager::newGame(int size, bool keepImage=false)
@@ -97,6 +98,13 @@ bool GameManager::loadGame(QString &filename)
 
 Board* GameManager::getActiveBoard() {
     return board;
+}
+
+void GameManager::solve(SolverType solverType)
+{
+    std::vector<int> vals = board->getValues();
+    std::vector<int> moves = idastarsolver.solve(vals);
+    board->solve(moves);
 }
 
 void GameManager::setPlayer(Player* player) {

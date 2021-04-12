@@ -35,6 +35,7 @@ void MainWindow::createBoard() {
         msgBox.exec();
     } else {
         Board* board = gameManager->newGame(size, ui->radioImage->isChecked());
+        connect(board, SIGNAL(moved()), this, SLOT(repaintBoard()));
         clearTileWidgets();
         createTileWidgetsFromBoard(board);
         ui->radioImage->setEnabled(true);
@@ -134,6 +135,10 @@ void MainWindow::loadGame() {
     }
 }
 
+void MainWindow::solve() {
+    gameManager->solve(SolverType::IDAStar);
+}
+
 void MainWindow::setupConnections() {
     connect(ui->usernameBtn, SIGNAL(clicked(bool)), this, SLOT(setUsername()));
     connect(ui->generateBtn, SIGNAL(clicked(bool)), this, SLOT(createBoard()));
@@ -141,4 +146,5 @@ void MainWindow::setupConnections() {
     connect(ui->radioImage, SIGNAL(toggled(bool)), this, SLOT(setImageBoard()));
     connect(ui->actionWczytaj_gr, SIGNAL(triggered(bool)), this, SLOT(loadGame()));
     connect(ui->actionZapisz_gr, SIGNAL(triggered(bool)), this, SLOT(saveGame()));
+    connect(ui->solveBtn, SIGNAL(clicked(bool)), this, SLOT(solve()));
 }

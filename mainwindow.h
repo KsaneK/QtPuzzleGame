@@ -24,11 +24,12 @@ public slots:
     void setImageBoard();
     void saveGame();
     void loadGame();
+    void solve();
+    void repaintBoard();
 private:
     Ui::MainWindow *ui;
     GameManager* gameManager;
     void setupConnections();
-    void repaintBoard();
     void clearTileWidgets();
     void createTileWidgetsFromBoard(Board *board);
 };

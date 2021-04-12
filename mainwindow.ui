@@ -106,7 +106,7 @@
         <widget class="QWidget" name="page_2">
          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,9">
           <item>
-           <layout class="QHBoxLayout" name="topBar" stretch="1,2,0,0,8,0">
+           <layout class="QHBoxLayout" name="topBar" stretch="1,2,0,0,0,8,0">
             <item>
              <widget class="QLineEdit" name="sizeField">
               <property name="minimumSize">
@@ -166,6 +166,13 @@
               <attribute name="buttonGroup">
                <string notr="true">buttonGroup</string>
               </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="solveBtn">
+              <property name="text">
+               <string>Rozwiąż</string>
+              </property>
              </widget>
             </item>
             <item>

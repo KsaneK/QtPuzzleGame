@@ -31,7 +31,10 @@ SOURCES += \
     gamemanager.cpp \
     tilewidget.cpp \
     player.cpp \
-    pixmaptile.cpp
+    pixmaptile.cpp \
+    dfssolver.cpp \
+    iddfssolver.cpp \
+    idastarsolver.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +44,11 @@ HEADERS += \
     tilewidget.h \
     player.h \
     pixmaptile.h \
-    simplevector.h
+    simplevector.h \
+    solver.h \
+    dfssolver.h \
+    iddfssolver.h \
+    idastarsolver.h
 
 FORMS += \
         mainwindow.ui

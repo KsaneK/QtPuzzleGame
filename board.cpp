@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <random>
 #include <QPixmapCache>
+#include <QTimer>
 
 Board::Board(int size)
 {
@@ -95,6 +96,37 @@ void Board::checkIfSolved() {
 Tile* Board::tileAt(int row, int col) {
     Tile* t = &tiles.at(row * size + col);
     return t;
+}
+
+std::vector<int> Board::getValues() {
+    std::vector<int> vals;
+    vals.reserve(size);
+    for (int row = 0; row < size; row++) {
+        for (int col = 0; col < size; col++) {
+            vals.push_back(tileAt(row, col)->getValue());
+        }
+    }
+    return vals;
+}
+
+void Board::solve(std::vector<int> moves)
+{
+    solution.clear();
+    for (int move : moves) solution.push_back(move);
+    QTimer::singleShot(500, this, [=](){solveTile();});
+}
+
+void Board::solveTile() {
+    if (!solution.empty()) {
+        int ind = solution.front();
+        std::cout << "test " << ind << std::endl;
+        solution.pop_front();
+        move(&tiles[ind]);
+        emit moved();
+        QTimer::singleShot(500, this, [=](){solveTile();});
+    } else {
+        finished = true;
+    }
 }
 
 void Board::move(Tile* tile) {

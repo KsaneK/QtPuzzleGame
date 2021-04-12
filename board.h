@@ -6,6 +6,8 @@
 #include <vector>
 #include <QPixmap>
 #include <QObject>
+#include <deque>
+#include <QTimer>
 
 class Board : public QObject
 {
@@ -22,13 +24,17 @@ public:
     void setImage(QPixmap *pixmap);
     int getSize();
     void clearImage();
+    std::vector<int> getValues();
+    void solve(std::vector<int> moves);
 signals:
-
+    void moved();
 public slots:
+    void solveTile();
 
 private:
     bool finished;
-    SimpleVector<Tile> tiles;
+    std::deque<int> solution;
+    std::vector<Tile> tiles;
     int size;
     void swap(int i1, int i2);
     bool isSolvable(std::vector<int> values);
