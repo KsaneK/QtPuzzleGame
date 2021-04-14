@@ -25,11 +25,12 @@ public:
     int getSize();
     void clearImage();
     std::vector<int> getValues();
-    void solve(std::vector<int> moves);
+    void setSolution(std::vector<int> moves);
 signals:
     void moved();
 public slots:
     void solveTile();
+    void solve();
 
 private:
     bool finished;

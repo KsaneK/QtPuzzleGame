@@ -109,17 +109,19 @@ std::vector<int> Board::getValues() {
     return vals;
 }
 
-void Board::solve(std::vector<int> moves)
-{
+void Board::setSolution(std::vector<int> moves) {
     solution.clear();
-    for (int move : moves) solution.push_back(move);
+    for (int move: moves) solution.push_back(move);
+}
+
+void Board::solve()
+{
     QTimer::singleShot(500, this, [=](){solveTile();});
 }
 
 void Board::solveTile() {
     if (!solution.empty()) {
         int ind = solution.front();
-        std::cout << "test " << ind << std::endl;
         solution.pop_front();
         move(&tiles[ind]);
         emit moved();

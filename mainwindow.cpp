@@ -19,6 +19,8 @@ MainWindow::MainWindow(GameManager* gm, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    state = WindowState::WAITING_FOR_USERNAME;
+    updateControls();
     delete ui;
 }
 
@@ -38,9 +40,8 @@ void MainWindow::createBoard() {
         connect(board, SIGNAL(moved()), this, SLOT(repaintBoard()));
         clearTileWidgets();
         createTileWidgetsFromBoard(board);
-        ui->radioImage->setEnabled(true);
-        ui->radioNumber->setEnabled(true);
-        ui->actionZapisz_gr->setEnabled(true);
+        state = WindowState::BOARD_LOADED;
+        updateControls();
     }
 }
 
@@ -78,8 +79,9 @@ void MainWindow::setUsername() {
     text.append(username);
     gameManager->setPlayer(player);
     ui->lUsername->setText(text);
-    ui->actionWczytaj_gr->setEnabled(true);
     ui->stackedWidget->setCurrentIndex(1);
+    state = WindowState::BOARD_NOT_LOADED;
+    updateControls();
 }
 
 void MainWindow::setNumberBoard() {
@@ -123,9 +125,11 @@ void MainWindow::loadGame() {
         QString selectedFile = fdialog.selectedFiles().at(0);
         bool loaded = gameManager->loadGame(selectedFile);
         if (loaded) {
-            ui->actionZapisz_gr->setEnabled(true);
+            state = WindowState::BOARD_LOADED;
+            updateControls();
             clearTileWidgets();
             createTileWidgetsFromBoard(gameManager->getActiveBoard());
+            connect(gameManager->getActiveBoard(), SIGNAL(moved()), this, SLOT(repaintBoard()));
             repaintBoard();
         } else {
             QMessageBox msgbox;
@@ -139,6 +143,20 @@ void MainWindow::solve() {
     gameManager->solve(SolverType::IDAStar);
 }
 
+void MainWindow::showTimeoutMessage() {
+    QMessageBox msgbox;
+    msgbox.setText("Nie udało się znaleźć rozwiązania w ciągu 10 sekund.");
+    msgbox.exec();
+}
+
+void MainWindow::updateControls() {
+    ui->radioNumber->setEnabled(state == WindowState::BOARD_LOADED);
+    ui->radioImage->setEnabled(state == WindowState::BOARD_LOADED);
+    ui->actionZapisz_gr->setEnabled(state == WindowState::BOARD_LOADED);
+    ui->actionWczytaj_gr->setEnabled(state != WindowState::WAITING_FOR_USERNAME);
+    ui->solveBtn->setEnabled(state == WindowState::BOARD_LOADED && gameManager->getActiveBoard()->getSize() <= 4);
+}
+
 void MainWindow::setupConnections() {
     connect(ui->usernameBtn, SIGNAL(clicked(bool)), this, SLOT(setUsername()));
     connect(ui->generateBtn, SIGNAL(clicked(bool)), this, SLOT(createBoard()));
@@ -147,4 +165,5 @@ void MainWindow::setupConnections() {
     connect(ui->actionWczytaj_gr, SIGNAL(triggered(bool)), this, SLOT(loadGame()));
     connect(ui->actionZapisz_gr, SIGNAL(triggered(bool)), this, SLOT(saveGame()));
     connect(ui->solveBtn, SIGNAL(clicked(bool)), this, SLOT(solve()));
+    connect(gameManager, SIGNAL(solveTimeout()), this, SLOT(showTimeoutMessage()));
 }

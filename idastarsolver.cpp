@@ -8,12 +8,16 @@
 #include <vector>
 #include <deque>
 
+#define GOAL 0
+#define TIMEOUT -1
+
 IDAStarSolver::IDAStarSolver()
 {
 }
 
 std::vector<int> IDAStarSolver::solve(std::vector<int> vals)
 {
+    solve_start_timestamp = std::chrono::high_resolution_clock::now();
     size = sqrt(vals.size());
     genWDTable(size);
 
@@ -23,29 +27,36 @@ std::vector<int> IDAStarSolver::solve(std::vector<int> vals)
         input[i] = vals[i] == -1 ? 0 : (char)vals[i] + 1;
         if (vals[i] == -1) hole = i;
     }
+    if (isGoal(input))
+        return std::vector<int>();
     int md = walking_dist(input);
     std::vector<int>* path = new std::vector<int>();
     for (int i = 0; i < 10000; i++) {
         path->clear();
         int cost = dfs(input, path, 0, md, hole);
-        if (cost == 100000) {
+        if (cost == GOAL) {
             for (int i = 0; i < path->size(); i++) {
                 int ind = path->at(i);
             }
-            return std::vector<int>(*path);
+            std::vector<int> result(*path);
+            path->clear(); path->shrink_to_fit(); delete path;
+            return result;
+        } else if (cost == TIMEOUT) {
+            throw TimeoutException("Nie udało się znaleźć rozwiązania w przeciągu 10 sekund");
         }
         md = cost;
     }
-
+    path->clear(); path->shrink_to_fit(); delete path;
     return std::vector<int>();
 }
 
 int IDAStarSolver::dfs(char* state, std::vector<int>* path, int cost, int bound, int hole) {
+    std::chrono::time_point<std::chrono::high_resolution_clock> current_ts = std::chrono::high_resolution_clock::now();
+    if (std::chrono::duration_cast<std::chrono::seconds>(current_ts - solve_start_timestamp).count() > 10) return TIMEOUT;
     int total_cost = cost + walking_dist(state);
     if (total_cost > bound) return total_cost;
     if (isGoal(state)) {
-        std::cout << "GOAL!!!!" << std::endl;
-        return 100000;
+        return GOAL;
     }
     int min = 999999;
     for (auto direction : directions) {
@@ -58,7 +69,7 @@ int IDAStarSolver::dfs(char* state, std::vector<int>* path, int cost, int bound,
             swap(state, hole, indexToSwap);
             path->push_back(indexToSwap);
             int r = dfs(state, path, cost + 1, bound, indexToSwap);
-            if (r == 100000) return r;
+            if (r == GOAL) return r;
             if (r < min) min = r;
             path->pop_back();
             swap(state, hole, indexToSwap);

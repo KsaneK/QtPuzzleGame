@@ -1,8 +1,10 @@
 #include "gamemanager.h"
 
+#include <QApplication>
 #include <QBuffer>
-#include <QTimer>
+#include <QThread>
 #include <iostream>
+#include <thread>
 
 GameManager::GameManager(QObject *parent) : QObject(parent)
 {
@@ -23,6 +25,7 @@ Board* GameManager::newGame(int size, bool keepImage=false)
         delete board;   
     }
     board = keepImage && pm != nullptr ? new Board(size, pm) : new Board(size);
+    connect(this, SIGNAL(solved()), board, SLOT(solve()));
     return board;
 }
 
@@ -92,8 +95,8 @@ bool GameManager::loadGame(QString &filename)
         delete board;
     if (pm != nullptr) board = new Board(boardSize, values, pm);
     else board = new Board(boardSize, values);
+    connect(this, SIGNAL(solved()), board, SLOT(solve()));
     return true;
-
 }
 
 Board* GameManager::getActiveBoard() {
@@ -103,8 +106,18 @@ Board* GameManager::getActiveBoard() {
 void GameManager::solve(SolverType solverType)
 {
     std::vector<int> vals = board->getValues();
-    std::vector<int> moves = idastarsolver.solve(vals);
-    board->solve(moves);
+    std::thread solverThread([this, vals]() {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        try {
+            std::vector<int> moves = idastarsolver.solve(vals);
+            board->setSolution(moves);
+            emit solved();
+        } catch (const TimeoutException& e) {
+            emit solveTimeout();
+        }
+        QApplication::restoreOverrideCursor();
+    });
+    solverThread.detach();
 }
 
 void GameManager::setPlayer(Player* player) {

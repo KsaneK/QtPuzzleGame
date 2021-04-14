@@ -24,7 +24,8 @@ public:
     void solve(SolverType);
 
 signals:
-
+    void solveTimeout();
+    void solved();
 public slots:
 
 private:

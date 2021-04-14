@@ -5,6 +5,12 @@
 
 #include <QMainWindow>
 
+enum WindowState {
+    WAITING_FOR_USERNAME,
+    BOARD_NOT_LOADED,
+    BOARD_LOADED
+};
+
 namespace Ui {
 class MainWindow;
 }
@@ -26,12 +32,15 @@ public slots:
     void loadGame();
     void solve();
     void repaintBoard();
+    void showTimeoutMessage();
 private:
+    WindowState state;
     Ui::MainWindow *ui;
     GameManager* gameManager;
     void setupConnections();
     void clearTileWidgets();
     void createTileWidgetsFromBoard(Board *board);
+    void updateControls();
 };
 
 #endif // MAINWINDOW_H

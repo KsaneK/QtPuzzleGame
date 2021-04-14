@@ -3,6 +3,20 @@
 
 #include "solver.h"
 #include <vector>
+#include <chrono>
+
+struct TimeoutException : public std::exception
+{
+    char* message;
+    const char * what () const throw ()
+    {
+        return message;
+    }
+public:
+    TimeoutException(char* msg) {
+        message = msg;
+    }
+};
 
 class IDAStarSolver : public Solver
 {
@@ -10,6 +24,7 @@ public:
     IDAStarSolver();
     std::vector<int> solve(std::vector<int> vals);
 private:
+    std::chrono::time_point<std::chrono::high_resolution_clock> solve_start_timestamp;
     std::unordered_map<long long int, int> WDTABLE;
     int bits;
     int directions[4][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
