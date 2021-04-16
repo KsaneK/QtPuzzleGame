@@ -17,9 +17,9 @@ IDAStarSolver::IDAStarSolver()
 
 std::vector<int> IDAStarSolver::solve(std::vector<int> vals)
 {
-    solve_start_timestamp = std::chrono::high_resolution_clock::now();
     size = sqrt(vals.size());
     genWDTable(size);
+    solve_start_timestamp = std::chrono::high_resolution_clock::now();
 
     char* input = new char[vals.size()];
     int hole;

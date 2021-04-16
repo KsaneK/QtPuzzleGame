@@ -131,7 +131,6 @@ void Board::solveTile() {
         int ind = solution.front();
         solution.pop_front();
         move(&tiles[ind]);
-        emit moved();
         QTimer::singleShot(500, this, [=](){solveTile();});
     } else {
         finished = true;
@@ -154,6 +153,7 @@ void Board::move(Tile* tile) {
         if (indEmpty != -1) {
             swap(ind, indEmpty);
             checkIfSolved();
+            emit moved();
         }
     }
 }
