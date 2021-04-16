@@ -25,9 +25,10 @@ public:
 
 signals:
     void solveTimeout();
-    void solved();
+    void solutionFound();
+    void boardSolved();
 public slots:
-
+    void checkBoard();
 private:
     Board* board;
     Player* player;

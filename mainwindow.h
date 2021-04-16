@@ -8,7 +8,8 @@
 enum WindowState {
     WAITING_FOR_USERNAME,
     BOARD_NOT_LOADED,
-    BOARD_LOADED
+    BOARD_LOADED,
+    SOLVING
 };
 
 namespace Ui {
@@ -33,6 +34,7 @@ public slots:
     void solve();
     void repaintBoard();
     void showTimeoutMessage();
+    void solveEnded();
 private:
     WindowState state;
     Ui::MainWindow *ui;

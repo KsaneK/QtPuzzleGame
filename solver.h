@@ -28,8 +28,6 @@ struct CharArrHasher {
     }
 };
 
-static int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
 enum SolverType {
     DFS,
     AStar,

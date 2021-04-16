@@ -7,14 +7,9 @@
 
 struct TimeoutException : public std::exception
 {
-    char* message;
     const char * what () const throw ()
     {
-        return message;
-    }
-public:
-    TimeoutException(char* msg) {
-        message = msg;
+        return "Nie udało się znaleźć rozwiązanie w przeciągu 10 sekund";
     }
 };
 

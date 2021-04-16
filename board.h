@@ -26,17 +26,22 @@ public:
     void clearImage();
     std::vector<int> getValues();
     void setSolution(std::vector<int> moves);
+    bool isFinished();
+    bool isLoaded();
 signals:
     void moved();
+    void boardFinished();
 public slots:
-    void solveTile();
     void solve();
 
 private:
     bool finished;
+    bool _isLoaded;
+    bool solverUsed;
     std::deque<int> solution;
     std::vector<Tile> tiles;
     int size;
+    void solveTile();
     void swap(int i1, int i2);
     bool isSolvable(std::vector<int> values);
     void checkIfSolved();

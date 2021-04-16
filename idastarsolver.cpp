@@ -35,14 +35,11 @@ std::vector<int> IDAStarSolver::solve(std::vector<int> vals)
         path->clear();
         int cost = dfs(input, path, 0, md, hole);
         if (cost == GOAL) {
-            for (int i = 0; i < path->size(); i++) {
-                int ind = path->at(i);
-            }
             std::vector<int> result(*path);
             path->clear(); path->shrink_to_fit(); delete path;
             return result;
         } else if (cost == TIMEOUT) {
-            throw TimeoutException("Nie udało się znaleźć rozwiązania w przeciągu 10 sekund");
+            throw TimeoutException();
         }
         md = cost;
     }

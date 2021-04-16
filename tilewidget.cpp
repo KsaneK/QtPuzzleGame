@@ -10,9 +10,20 @@
 TileWidget::TileWidget(Tile* tile, QWidget *parent) : QWidget(parent)
 {
     this->tile = tile;
+    clickEnabled = true;
     setCursor(QCursor(Qt::PointingHandCursor));
     setAutoFillBackground(true);
     setActive(false);
+}
+
+void TileWidget::enable()
+{
+    clickEnabled = true;
+}
+
+void TileWidget::disable()
+{
+    clickEnabled = false;
 }
 
 void TileWidget::paintEvent(QPaintEvent* e) {
@@ -51,9 +62,11 @@ void TileWidget::leaveEvent(QEvent*) {
 }
 
 void TileWidget::mouseReleaseEvent(QMouseEvent *event) {
-    emit clicked();
-    if (tile->getValue() == -1)
-        setActive(false);
+    if (clickEnabled == true) {
+        emit clicked();
+        if (tile->getValue() == -1)
+            setActive(false);
+    }
 }
 
 void TileWidget::setActive(bool active) {

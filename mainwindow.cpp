@@ -140,10 +140,33 @@ void MainWindow::loadGame() {
 }
 
 void MainWindow::solve() {
+    state = WindowState::SOLVING;
+    updateControls();
+    for (int i = 0; i < ui->boardGrid->count(); i++)
+        ((TileWidget*)ui->boardGrid->itemAt(0)->widget())->disable();
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     gameManager->solve(SolverType::IDAStar);
 }
 
+void MainWindow::solveEnded() {
+    QApplication::restoreOverrideCursor();
+    state = WindowState::BOARD_LOADED;
+    updateControls();
+    for (int i = 0; i < ui->boardGrid->count(); i++)
+        ((TileWidget*)ui->boardGrid->itemAt(0)->widget())->enable();
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Koniec");
+    msgBox.setText("Puzzle zostały rozwiązane!");
+    msgBox.exec();
+
+}
+
 void MainWindow::showTimeoutMessage() {
+    QApplication::restoreOverrideCursor();
+    state = WindowState::BOARD_LOADED;
+    updateControls();
+    for (int i = 0; i < ui->boardGrid->count(); i++)
+        ((TileWidget*)ui->boardGrid->itemAt(0)->widget())->enable();
     QMessageBox msgbox;
     msgbox.setText("Nie udało się znaleźć rozwiązania w ciągu 10 sekund.");
     msgbox.exec();
@@ -152,9 +175,10 @@ void MainWindow::showTimeoutMessage() {
 void MainWindow::updateControls() {
     ui->radioNumber->setEnabled(state == WindowState::BOARD_LOADED);
     ui->radioImage->setEnabled(state == WindowState::BOARD_LOADED);
-    ui->actionZapisz_gr->setEnabled(state == WindowState::BOARD_LOADED);
-    ui->actionWczytaj_gr->setEnabled(state != WindowState::WAITING_FOR_USERNAME);
-    ui->solveBtn->setEnabled(state == WindowState::BOARD_LOADED && gameManager->getActiveBoard()->getSize() <= 4);
+    ui->actionZapisz_gr->setEnabled(state == WindowState::BOARD_LOADED && !gameManager->getActiveBoard()->isFinished());
+    ui->actionWczytaj_gr->setEnabled(state != WindowState::WAITING_FOR_USERNAME && state != WindowState::SOLVING);
+    ui->solveBtn->setEnabled(state == WindowState::BOARD_LOADED && gameManager->getActiveBoard()->getSize() <= 4 && !gameManager->getActiveBoard()->isFinished());
+    ui->generateBtn->setEnabled(state != WindowState::SOLVING);
 }
 
 void MainWindow::setupConnections() {
@@ -166,4 +190,5 @@ void MainWindow::setupConnections() {
     connect(ui->actionZapisz_gr, SIGNAL(triggered(bool)), this, SLOT(saveGame()));
     connect(ui->solveBtn, SIGNAL(clicked(bool)), this, SLOT(solve()));
     connect(gameManager, SIGNAL(solveTimeout()), this, SLOT(showTimeoutMessage()));
+    connect(gameManager, SIGNAL(boardSolved()), this, SLOT(solveEnded()));
 }

@@ -11,6 +11,7 @@ Board::Board(int size)
 {
     finished = false;
     this->size = size;
+    _isLoaded = false;
     std::vector<int> values;
     for (int i = 0; i < size * size - 1; i++) values.push_back(i);
     std::random_device rd;
@@ -31,6 +32,7 @@ Board::Board(int size)
 
 Board::Board(int size, std::vector<int> values) {
     this->size = size;
+    _isLoaded = true;
     finished = false;
     tiles.reserve(size * size);
     for (unsigned int i = 0; i < values.size() ; i++) {
@@ -52,6 +54,14 @@ Board::~Board() {
 
 int Board::getSize() {
     return size;
+}
+
+bool Board::isLoaded() {
+    return _isLoaded;
+}
+
+bool Board::isFinished() {
+    return finished;
 }
 
 void Board::setImage(QPixmap* pixmap) {
@@ -87,10 +97,6 @@ void Board::checkIfSolved() {
     }
     finished = true;
     tiles.at(tiles.size() - 1).setValue(tiles.size() - 1);
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Koniec");
-    msgBox.setText("Puzzle rozwiązane! Gratulacje!");
-    msgBox.exec();
 }
 
 Tile* Board::tileAt(int row, int col) {
@@ -116,6 +122,7 @@ void Board::setSolution(std::vector<int> moves) {
 
 void Board::solve()
 {
+    solverUsed = true;
     QTimer::singleShot(500, this, [=](){solveTile();});
 }
 

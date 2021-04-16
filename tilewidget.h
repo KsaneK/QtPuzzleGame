@@ -12,6 +12,8 @@ class TileWidget : public QWidget
     Q_OBJECT
 public:
     explicit TileWidget(Tile* tile, QWidget *parent = nullptr);
+    void enable();
+    void disable();
 signals:
     void clicked();
 
@@ -19,6 +21,7 @@ public slots:
 
 private:
     Tile* tile;
+    bool clickEnabled;
 
     void paintEvent(QPaintEvent*);
     void enterEvent(QEvent* e);
